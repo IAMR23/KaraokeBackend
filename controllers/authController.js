@@ -1,9 +1,9 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import User from "../models/User.js";
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User.js");
 
 // Función para iniciar sesión
-export const login = async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -23,7 +23,7 @@ export const login = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" } // El token expirará en 1 hora
+      { expiresIn: "1h" }
     );
 
     // Enviar la respuesta con el token
@@ -41,3 +41,5 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Error en el servidor", error });
   }
 };
+
+module.exports = { login };

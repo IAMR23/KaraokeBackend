@@ -1,17 +1,14 @@
-// models/User.js
-import { Schema, model } from "mongoose";
+const mongoose = require('mongoose');
 
-const UserSchema = new Schema({
-  nombre: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  role: {
+const UsuarioSchema = new mongoose.Schema({
+  nombre: String,
+  email: { type: String, unique: true, required: true },
+  password: { type: String, required: true }, // encriptada
+  rol: {
     type: String,
-    enum: ["admin", "arrendador", "arrendatario"],
-    default: "arrendatario",
+    enum: ['admin', 'cantante'],
+    default: 'cantante'
   },
-  verificado: { type: Boolean, default: false }, // Nuevo campo para verificar al arrendador
-  createdAt: { type: Date, default: Date.now },
-});
+}, { timestamps: true });
 
-export default model("User", UserSchema);
+module.exports = mongoose.model('Usuario', UsuarioSchema);

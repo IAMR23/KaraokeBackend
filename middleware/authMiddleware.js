@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
-import User from "../models/User.js";
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
 // Middleware para verificar que el usuario está autenticado
-export const authenticate = async (req, res, next) => {
+const authenticate = async (req, res, next) => {
   try {
     // Obtener el token del encabezado Authorization (Bearer <token>)
     const token = req.headers.authorization?.split(" ")[1];
@@ -28,41 +28,37 @@ export const authenticate = async (req, res, next) => {
   }
 };
 
-// Middleware para verificar que el usuario sea un arrendador
-export const isArrendador = (req, res, next) => {
-  if (req.user && req.user.role === "arrendador") {
-    return next(); // El usuario es arrendador, continuar
+// Middleware para verificar que el usuario sea un arrendador (cantante)
+const isPlayer = (req, res, next) => {
+  if (req.user && req.user.rol === "cantante") {
+    return next(); // El usuario es cantante, continuar
   }
   return res
     .status(403)
-    .json({ message: "Acción solo permitida para arrendadores" });
+    .json({ message: "Acción solo permitida para cantantes" });
 };
 
-export const isAprobado = (req, res, next) => {
+const isAprobado = (req, res, next) => {
   if (req.user && req.user.verificado === true) {
-    return next(); // El arrendador está aprobado, continuar
+    return next(); // El cantante está aprobado, continuar
   }
-  return res
-    .status(403)
-    .json({
-      message: "El arrendador no está aprobado para realizar esta acción",
-    });
+  return res.status(403).json({
+    message: "El cantante no está aprobado para realizar esta acción",
+  });
 };
 
-export const isAdmin = (req, res, next) => {
-  if (req.user && req.user.role === "admin") {
-    return next(); // El usuario es arrendador, continuar
+const isAdmin = (req, res, next) => {
+  if (req.user && req.user.rol === "admin") {
+    return next(); // El usuario es admin, continuar
   }
   return res
     .status(403)
     .json({ message: "Acción solo permitida para administradores" });
 };
 
-export const isArrendatario = (req, res, next) => {
-  if (req.user && req.user.role === "arrendatario") {
-    return next(); // El usuario es arrendador, continuar
-  }
-  return res
-    .status(403)
-    .json({ message: "Acción solo permitida para arrendadores" });
+module.exports = {
+  authenticate,
+  isPlayer,
+  isAprobado,
+  isAdmin,
 };

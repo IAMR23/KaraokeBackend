@@ -1,35 +1,43 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const path = require("path");
 const conectarDB = require("./config/db");
 
-// Rutas
-/* const propertyRoutes = require("./routes/propertyRoutes");
+// Routes
 const userRoutes = require("./routes/UserRoutes");
 const authRoutes = require("./routes/authRoutes");
-const adminRoutes = require("./routes/adminRoutes");
-const arrendatarioRoutes = require("./routes/arrendatarioRoutes");
-const reviewsRoutes = require("./routes/reviewsRoute"); */
+const songRoutes = require("./routes/cancionRoutes");
+const generoRoutes = require("./routes/generoRoutes");
+const anuncioRoutes = require("./routes/anuncioRoutes");
+const resenaRoutes = require("./routes/resenaRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Middleware
 app.use(express.json());
 app.use(cors());
 
-// Servir archivos estáticos desde la carpeta 'uploads'
-app.use("/uploads", express.static("uploads"));
+// Conectar a la base de datos y luego arrancar el servidor
+conectarDB()
+  .then(() => {
+    console.log("Base de datos conectada");
 
-// Usar rutas
-/* app.use("/", propertyRoutes);
-app.use("/", userRoutes);
-app.use("/", authRoutes);
-app.use("/", adminRoutes);
-app.use("/", arrendatarioRoutes);
-app.use("/", reviewsRoutes); */
+    // Usar rutas con prefijo para usuarios
+    app.use("/", userRoutes);
+    app.use("/", authRoutes);
+    app.use("/song", songRoutes);
+    app.use("/genero", generoRoutes);
+    app.use("/anuncio", anuncioRoutes);
+app.use("/api/resenas", resenaRoutes);
 
-// Conexión a la base de datos
-conectarDB();
 
-app.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${PORT}`));
+
+    app.listen(PORT, () => {
+      console.log(`Servidor corriendo en el puerto ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Error al conectar a la base de datos:", err);
+    process.exit(1); // Termina el proceso si no se conecta a la DB
+  });

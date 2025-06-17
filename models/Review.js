@@ -1,19 +1,10 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
-const reviewSchema = new mongoose.Schema({
-  departamento: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Departament",
-    required: true,
-  },
-  arrendatario: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  comentario: { type: String, required: true },
-  calificacion: { type: Number, required: true, min: 1, max: 5 }, // Calificación de 1 a 5 estrellas
-  fecha: { type: Date, default: Date.now },
-});
+const ResenaSchema = new mongoose.Schema({
+  usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' },
+  cancion: { type: mongoose.Schema.Types.ObjectId, ref: 'Cancion' },
+  comentario: String,
+  calificacion: { type: Number, min: 1, max: 5 }
+}, { timestamps: true });
 
-export default mongoose.model("Review", reviewSchema);
+module.exports = mongoose.model('Resena', ResenaSchema);
