@@ -6,6 +6,7 @@ const {
   obtenerTodosAnuncios,
   actualizarAnuncio,
   eliminarAnuncio,
+  obtenerAnunciosVisibles,
 } = require("../controllers/anuncioController");
 
 const { authenticate, isAdmin } = require("../middleware/authMiddleware");
@@ -30,6 +31,7 @@ router.get("/", obtenerAnuncios);
 
 // Obtener todos los anuncios (admin)
 router.get("/admin", authenticate, isAdmin, obtenerTodosAnuncios);
+router.get("/visible", obtenerAnunciosVisibles);
 
 // Actualizar anuncio (admin)
 router.put(

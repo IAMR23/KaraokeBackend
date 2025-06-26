@@ -48,7 +48,7 @@ export async function desaprobarDepartamento(req, res) {
 export async function obtenerArrendadores(req, res) {
   try {
     const arrendadores = await User.find({
-      role: "arrendador",
+      rol: "arrendador",
     });
     res.status(200).json(arrendadores);
   } catch (error) {

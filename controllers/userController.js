@@ -3,7 +3,7 @@ const { validationResult } = require("express-validator");
 const User = require("../models/User.js");
 
 async function createUser(req, res) {
-  const { nombre, email, password, role } = req.body;
+  const { nombre, email, password, rol } = req.body;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -26,7 +26,7 @@ async function createUser(req, res) {
       nombre,
       email,
       password: hashedPassword,
-      role,
+      rol,
     });
 
     await newUser.save();
@@ -41,7 +41,7 @@ async function createUser(req, res) {
 
 async function updateUser(req, res) {
   const { id } = req.params;
-  const { nombre, email, password, role } = req.body;
+  const { nombre, email, password, rol } = req.body;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -69,7 +69,7 @@ async function updateUser(req, res) {
 
     user.nombre = nombre || user.nombre;
     user.email = email || user.email;
-    user.role = role || user.role;
+    user.rol = rol || user.rol;
 
     await user.save();
 
@@ -84,6 +84,21 @@ async function getUserById(req, res) {
 
   try {
     const user = await User.findById(id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener el usuario", error });
+  }
+}
+
+async function getUsers(req, res) {
+  const { id } = req.params;
+
+  try {
+    const user = await User.find();
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
@@ -116,4 +131,5 @@ module.exports = {
   updateUser,
   getUserById,
   deleteUser,
+  getUsers
 };

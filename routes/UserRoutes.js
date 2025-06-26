@@ -4,12 +4,14 @@ const {
   updateUser,
   getUserById,
   deleteUser,
+  getUsers,
 } = require("../controllers/userController");
 
 const router = express.Router();
 
 // Ruta para crear un usuario
 router.post("/user", createUser);
+router.get("/users", getUsers);
 
 // Ruta para actualizar un usuario por su ID
 router.put("/users/:id", updateUser);

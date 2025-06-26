@@ -27,12 +27,24 @@ const crearAnuncio = async (req, res) => {
 // Obtener todos los anuncios (opcionalmente solo visibles)
 const obtenerAnuncios = async (req, res) => {
   try {
-    const anuncios = await Anuncio.find({ visible: true }).sort({ createdAt: -1 });
+    const anuncios = await Anuncio.find().sort({ createdAt: -1 });
     res.status(200).json(anuncios);
   } catch (error) {
     res.status(500).json({ mensaje: "Error al obtener los anuncios", error });
   }
 };
+
+
+
+const obtenerAnunciosVisibles = async (req, res) => {
+  try {
+    const anuncios = await Anuncio.find({visible : true}).sort({ createdAt: -1 });
+    res.status(200).json(anuncios);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al obtener los anuncios", error });
+  }
+};
+
 
 // Obtener todos los anuncios (admin: visibles e invisibles)
 const obtenerTodosAnuncios = async (req, res) => {
@@ -85,6 +97,7 @@ const eliminarAnuncio = async (req, res) => {
 module.exports = {
   crearAnuncio,
   obtenerAnuncios,
+  obtenerAnunciosVisibles,
   obtenerTodosAnuncios,
   actualizarAnuncio,
   eliminarAnuncio,

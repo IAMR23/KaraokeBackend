@@ -55,33 +55,53 @@ const eliminarCancion = async (req, res) => {
   }
 };
 
+const mongoose = require("mongoose");
+
 const filtrarCanciones = async (req, res) => {
   try {
-    const { titulo, artista, genero, ordenFecha } = req.query;
+    const { busqueda, ordenFecha } = req.query;
 
-    const filtro = {};
+    const pipeline = [
+      {
+        $lookup: {
+          from: "generos", // nombre de la colección en MongoDB
+          localField: "generos",
+          foreignField: "_id",
+          as: "generos",
+        },
+      },
+    ];
 
-    if (titulo) {
-      filtro.titulo = { $regex: titulo, $options: "i" }; // búsqueda parcial, sin importar mayúsculas
+    if (busqueda) {
+      const regex = new RegExp(busqueda, "i");
+
+      pipeline.push({
+        $match: {
+          $or: [
+            { titulo: { $regex: regex } },
+            { artista: { $regex: regex } },
+            { "generos.nombre": { $regex: regex } },
+          ],
+        },
+      });
     }
 
-    if (artista) {
-      filtro.artista = { $regex: artista, $options: "i" };
-    }
+    // Ordenar por fecha de creación
+    pipeline.push({
+      $sort: {
+        createdAt: ordenFecha === "asc" ? 1 : -1,
+      },
+    });
 
-    if (genero) {
-      filtro.generos = genero; // espera el _id del género
-    }
-
-    const canciones = await Cancion.find(filtro)
-      .populate("generos")
-      .sort({ createdAt: ordenFecha === "asc" ? 1 : -1 });
+    const canciones = await mongoose.model("Cancion").aggregate(pipeline);
 
     res.status(200).json({ canciones });
   } catch (error) {
+    console.error("Error en filtro por búsqueda:", error);
     res.status(500).json({ message: "Error al filtrar canciones", error });
   }
 };
+
 
 
 module.exports = {

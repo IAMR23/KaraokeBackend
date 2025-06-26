@@ -28,7 +28,22 @@ async function createGenero(req, res) {
   }
 }
 
-// Obtener un género por ID
+
+async function getGenero(req, res) {
+  const { id } = req.params;
+
+  try {
+    const genero = await Genero.find();
+    if (!genero) {
+      return res.status(404).json({ message: "Género no encontrado" });
+    }
+
+    res.status(200).json({ genero });
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener el género", error });
+  }
+}
+
 async function getGeneroById(req, res) {
   const { id } = req.params;
 
@@ -103,6 +118,7 @@ async function deleteGenero(req, res) {
 module.exports = {
   createGenero,
   getGeneroById,
+  getGenero , 
   updateGenero,
   deleteGenero,
 };

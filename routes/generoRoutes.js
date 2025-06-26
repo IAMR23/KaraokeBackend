@@ -5,6 +5,7 @@ const {
   getGeneroById,
   updateGenero,
   deleteGenero,
+  getGenero,
 } = require("../controllers/generoController");
 
 const router = express.Router();
@@ -33,6 +34,7 @@ router.put(
 );
 
 // Eliminar género
+router.get("/", getGenero);
 router.delete("/:id", deleteGenero);
 
 module.exports = router;

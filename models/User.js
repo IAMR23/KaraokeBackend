@@ -6,9 +6,13 @@ const UsuarioSchema = new mongoose.Schema({
   password: { type: String, required: true }, // encriptada
   rol: {
     type: String,
-    enum: ['admin', 'cantante'],
+    enum: ['cantante'],
     default: 'cantante'
   },
+suscrito: {
+  type: Boolean,
+  default: false
+}
 }, { timestamps: true });
 
 module.exports = mongoose.model('Usuario', UsuarioSchema);
