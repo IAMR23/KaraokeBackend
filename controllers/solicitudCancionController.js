@@ -1,76 +1,79 @@
-const SolicitudCancion = require("../models/SolicitudCancion");
+const SolicitudCancion = require('../models/SolicitudCancion');
 
-// Crear una nueva solicitud
-const crearSolicitud = async (req, res) => {
+// Crear solicitud
+exports.crearSolicitud = async (req, res) => {
   try {
-    const { usuario, titulo_sugerido, artista_sugerido, descripcion } = req.body;
-
     const nuevaSolicitud = new SolicitudCancion({
-      usuario,
-      titulo_sugerido,
-      artista_sugerido,
-      descripcion,
-      estado: false, // o "pendiente", según tu lógica
+      usuario: req.body.usuario,
+      comentario: req.body.comentario,
     });
 
-    await nuevaSolicitud.save();
-    res.status(201).json({ message: "Solicitud enviada exitosamente", solicitud: nuevaSolicitud });
+    const solicitudGuardada = await nuevaSolicitud.save();
+    res.status(201).json(solicitudGuardada);
   } catch (error) {
-    res.status(500).json({ message: "Error al crear la solicitud", error });
+    res.status(500).json({ mensaje: 'Error al crear la solicitud', error });
   }
 };
 
 // Obtener todas las solicitudes
-const obtenerSolicitudes = async (req, res) => {
+
+// Obtener todas las solicitudes
+exports.obtenerSolicitudes = async (req, res) => {
   try {
     const solicitudes = await SolicitudCancion.find()
-      .populate("usuario", "nombre email")
+      .populate('usuario', 'nombre email') // <-- Esta línea es clave
       .sort({ createdAt: -1 });
+
     res.status(200).json(solicitudes);
   } catch (error) {
-    res.status(500).json({ message: "Error al obtener las solicitudes", error });
+    res.status(500).json({ mensaje: 'Error al obtener las solicitudes', error });
   }
 };
 
-// Actualizar estado de una solicitud
-const actualizarEstadoSolicitud = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { estado } = req.body; // true = aceptada, false = pendiente/rechazada
 
-    const solicitud = await SolicitudCancion.findById(id);
+// Obtener solicitud por ID
+exports.obtenerSolicitudPorId = async (req, res) => {
+  try {
+    const solicitud = await SolicitudCancion.findById(req.params.id).populate('usuario');
     if (!solicitud) {
-      return res.status(404).json({ message: "Solicitud no encontrada" });
+      return res.status(404).json({ mensaje: 'Solicitud no encontrada' });
+    }
+    res.status(200).json(solicitud);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al obtener la solicitud', error });
+  }
+};
+
+// Actualizar solicitud
+exports.actualizarSolicitud = async (req, res) => {
+  try {
+    const solicitudActualizada = await SolicitudCancion.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    if (!solicitudActualizada) {
+      return res.status(404).json({ mensaje: 'Solicitud no encontrada' });
     }
 
-    solicitud.estado = estado;
-    await solicitud.save();
-
-    res.status(200).json({ message: "Estado actualizado", solicitud });
+    res.status(200).json(solicitudActualizada);
   } catch (error) {
-    res.status(500).json({ message: "Error al actualizar la solicitud", error });
+    res.status(500).json({ mensaje: 'Error al actualizar la solicitud', error });
   }
 };
 
 // Eliminar solicitud
-const eliminarSolicitud = async (req, res) => {
+exports.eliminarSolicitud = async (req, res) => {
   try {
-    const { id } = req.params;
+    const solicitudEliminada = await SolicitudCancion.findByIdAndDelete(req.params.id);
 
-    const solicitud = await SolicitudCancion.findByIdAndDelete(id);
-    if (!solicitud) {
-      return res.status(404).json({ message: "Solicitud no encontrada" });
+    if (!solicitudEliminada) {
+      return res.status(404).json({ mensaje: 'Solicitud no encontrada' });
     }
 
-    res.status(200).json({ message: "Solicitud eliminada correctamente" });
+    res.status(200).json({ mensaje: 'Solicitud eliminada correctamente' });
   } catch (error) {
-    res.status(500).json({ message: "Error al eliminar la solicitud", error });
+    res.status(500).json({ mensaje: 'Error al eliminar la solicitud', error });
   }
-};
-
-module.exports = {
-  crearSolicitud,
-  obtenerSolicitudes,
-  actualizarEstadoSolicitud,
-  eliminarSolicitud,
 };

@@ -11,6 +11,7 @@ const generoRoutes = require("./routes/generoRoutes");
 const anuncioRoutes = require("./routes/anuncioRoutes");
 const resenaRoutes = require("./routes/resenaRoutes");
 const totalRoutes = require("./routes/TotalRoutes");
+const solicitudCancionRouter = require("./routes/solicitudCancionRoutes");
  
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -32,6 +33,8 @@ conectarDB()
     app.use("/anuncio", anuncioRoutes);
     app.use("/resenas", resenaRoutes);
     app.use("/t", totalRoutes);
+    app.use("/solicitud", solicitudCancionRouter);
+
 
     app.listen(PORT,  '0.0.0.0', () => {
       console.log(`Servidor corriendo en el puerto ${PORT}`);
