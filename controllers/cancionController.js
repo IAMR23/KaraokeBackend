@@ -102,6 +102,46 @@ const filtrarCanciones = async (req, res) => {
   }
 };
 
+// GET /song?search=texto&page=1&limit=20
+// Backend: controlador para /song/search
+const getCancionesPaginadas = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const busqueda = req.query.busqueda || "";
+  const ordenFecha = req.query.ordenFecha === "asc" ? 1 : -1;
+
+  const query = {
+    $or: [
+      { titulo: { $regex: busqueda, $options: "i" } },
+      { artista: { $regex: busqueda, $options: "i" } },
+      { "generos.nombre": { $regex: busqueda, $options: "i" } }, // si quieres buscar por género
+    ],
+  };
+
+  try {
+    const canciones = await Cancion.find(query)
+      .populate("generos")
+      .sort({ fecha: ordenFecha })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Cancion.countDocuments(query);
+
+    res.json({
+      canciones,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    console.error("Error al buscar canciones:", error);
+    res.status(500).json({ error: "Error al buscar canciones" });
+  }
+};
+
+
 
 
 module.exports = {
@@ -110,5 +150,6 @@ module.exports = {
   obtenerCancion,
   actualizarCancion,
   eliminarCancion,
-  filtrarCanciones
+  filtrarCanciones , 
+  getCancionesPaginadas
 };
