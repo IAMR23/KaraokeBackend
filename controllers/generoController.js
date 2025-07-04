@@ -3,7 +3,7 @@ const Genero = require("../models/Genero");
 
 // Crear un nuevo género
 async function createGenero(req, res) {
-  const { nombre, description } = req.body;
+  const { nombre } = req.body;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -16,7 +16,7 @@ async function createGenero(req, res) {
       return res.status(400).json({ message: "El género ya existe" });
     }
 
-    const newGenero = new Genero({ nombre, description });
+    const newGenero = new Genero({ nombre });
     await newGenero.save();
 
     res.status(201).json({
@@ -62,7 +62,7 @@ async function getGeneroById(req, res) {
 // Actualizar un género
 async function updateGenero(req, res) {
   const { id } = req.params;
-  const { nombre, description } = req.body;
+  const { nombre } = req.body;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -85,7 +85,6 @@ async function updateGenero(req, res) {
       genero.nombre = nombre;
     }
 
-    genero.description = description || genero.description;
 
     await genero.save();
 

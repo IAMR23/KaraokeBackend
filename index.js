@@ -12,6 +12,7 @@ const anuncioRoutes = require("./routes/anuncioRoutes");
 const resenaRoutes = require("./routes/resenaRoutes");
 const totalRoutes = require("./routes/TotalRoutes");
 const solicitudCancionRouter = require("./routes/solicitudCancionRoutes");
+const publicacionRoutes = require ("./routes/publicacionRoutes")
  
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -34,6 +35,7 @@ conectarDB()
     app.use("/resenas", resenaRoutes);
     app.use("/t", totalRoutes);
     app.use("/solicitud", solicitudCancionRouter);
+    app.use("/publicacion", publicacionRoutes);
 
 
     app.listen(PORT,  '0.0.0.0', () => {
