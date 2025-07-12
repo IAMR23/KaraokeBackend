@@ -55,4 +55,4 @@ async function captureOrder(orderId) {
   return res.json();
 }
 
-module.exports = { createOrder, captureOrder };
+module.exports = { createOrder, captureOrder , generateAccessToken };

@@ -14,6 +14,7 @@ const totalRoutes = require("./routes/TotalRoutes");
 const solicitudCancionRouter = require("./routes/solicitudCancionRoutes");
 const publicacionRoutes = require ("./routes/publicacionRoutes");
 const paypalRoutes = require ("./routes/paypalRoutes");
+const suscripcionRoutes = require ("./routes/suscripcionRoutes");
  
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -34,10 +35,11 @@ conectarDB()
     app.use("/genero", generoRoutes);
     app.use("/anuncio", anuncioRoutes);
     app.use("/resenas", resenaRoutes);
-    app.use("/t", totalRoutes);
+    app.use("/t", totalRoutes);  
     app.use("/solicitud", solicitudCancionRouter);
     app.use("/publicacion", publicacionRoutes);
     app.use("/paypal", paypalRoutes);
+    app.use("/suscripcion", suscripcionRoutes);
 
 
     app.listen(PORT,  '0.0.0.0', () => {
