@@ -16,8 +16,8 @@ const UsuarioSchema = new mongoose.Schema({
 
   rol: {
     type: String,
-    enum: ['cantante'],
-    default: 'cantante',
+    enum: ['admin'],
+    default: 'admin',
   },
 
   // Nuevo: Suscripción
